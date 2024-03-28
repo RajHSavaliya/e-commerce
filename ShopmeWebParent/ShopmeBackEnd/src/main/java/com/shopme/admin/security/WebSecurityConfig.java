@@ -1,5 +1,6 @@
 package com.shopme.admin.security;
 
+/*
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -88,3 +89,97 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	
 }
+
+*/
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
+
+
+
+import static org.springframework.security.config.Customizer.withDefaults;
+
+@Configuration
+@EnableWebSecurity
+public class WebSecurityConfig  {
+
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+
+	}
+
+	/*
+	 @Bean 
+	 public UserDetailsService ShomeUserDetailService() {
+		 return new ShopmeUserDetailService(); 
+		 } */
+	 
+/*	@Bean
+	 public void configure(AuthenticationManagerBuilder auth) throws Exception {
+	  
+	  auth.userDetailsService(shomeUserDetailService())
+	 .passwordEncoder(passwordEncoder());
+	 
+	 
+	 auth.inMemoryAuthentication().withUser("raj").password(this.passwordEncoder()
+	 .encode("12345")).roles("normal"); 
+	 } */
+
+	
+	 @Bean
+	    public InMemoryUserDetailsManager userDetailsService() {
+	        UserDetails user = User.withDefaultPasswordEncoder()
+	            .username("user")
+	            .password("{noop}password")
+	            .roles("USER")
+	            .build();
+	        return new InMemoryUserDetailsManager(user);
+	    }
+	 
+  /* @Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		http.authorizeHttpRequests((authz) -> {
+			try {
+				authz
+				.anyRequest()
+				.permitAll()
+				.and()
+				.formLogin()
+				.loginPage("/login")
+				.permitAll()
+				.and()
+				.logout()
+			     .permitAll();
+				;
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}).httpBasic(withDefaults());
+		return http.build();
+	} */
+   
+   @Bean
+   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+       http
+           .authorizeRequests((authz) -> authz
+               .anyRequest().permitAll()
+           )
+           .httpBasic(withDefaults());
+       return http.build();
+   }
+
+}
+
